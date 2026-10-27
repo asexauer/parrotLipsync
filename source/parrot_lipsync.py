@@ -21,6 +21,7 @@
 
 import bpy
 import bpy_extras
+import bpy_extras.anim_utils  # FIX: `import bpy_extras` alone does not make the anim_utils submodule accessible
 import subprocess
 import sys
 import os
