@@ -43,7 +43,12 @@ jobs:
       - name: Create manifest
         run: |
           cd source
-          (cat ../blender_manifest_template_mac.toml; echo "wheels = ["; ls -1 wheels | grep -v "$numpy" | sed 's/\(^.*$\)/  "\.\/wheels\/\1",/'; echo "]") > blender_manifest.toml
+          # FIX (issue #35): derive the Blender platform tag from the build matrix,
+          # instead of using the hardcoded "macos-x64" line from the template.
+          # The wheels are architecture-specific, so each build variant must
+          # declare its own platform (macos-arm64 / macos-x64).
+          platform="macos-${{ matrix.arch }}"
+          (cat ../blender_manifest_template_mac.toml | sed "s/^platforms = .*/platforms = [\"${platform}\"]/"; echo "wheels = ["; ls -1 wheels | grep -v "numpy" | sed 's/\(^.*$\)/  "\.\/wheels\/\1",/'; echo "]") > blender_manifest.toml
 
       - name: Setup Blender
         run: |
